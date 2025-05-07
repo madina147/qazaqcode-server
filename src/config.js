@@ -9,7 +9,7 @@ const config = {
   
   // AI evaluation configuration
   ai: {
-    apiKey: process.env.GOOGLE_AI_API_KEY || "AIzaSyCaoZoK6b2XVk8CX-R3-zPLgfH8c2_ML-Q",
+    apiKey: process.env.GOOGLE_AI_API_KEY || "AIzaSyCSdfmxdInQwvA-gNWNnn6aT3dKWqCwzOg",
     model: process.env.AI_MODEL || "gemini-1.5-flash-latest",
     temperature: parseFloat(process.env.AI_TEMPERATURE || "0.7"),
     evaluationEnabled: process.env.AI_EVALUATION_ENABLED !== 'false',
