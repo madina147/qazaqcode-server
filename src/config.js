@@ -41,7 +41,7 @@ const config = {
   
   // CORS configuration
   cors: {
-    origin: process.env.CLIENT_URL || 'https://34.34.73.209',
+    origin: process.env.CLIENT_URL || 'http://34.34.73.209',
     credentials: true
   },
   
