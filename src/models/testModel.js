@@ -1,29 +1,64 @@
 const mongoose = require('mongoose');
 
+const optionSchema = mongoose.Schema({
+  text: {
+    type: String,
+    required: true
+  },
+  isCorrect: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
+});
+
+const questionSchema = mongoose.Schema({
+  text: {
+    type: String,
+    required: true
+  },
+  points: {
+    type: Number,
+    required: true,
+    default: 1
+  },
+  options: [optionSchema]
+});
+
 const testSchema = mongoose.Schema(
   {
-    lesson: {
+    title: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    description: {
+      type: String,
+      trim: true
+    },
+    group: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Lesson',
+      ref: 'Group',
       required: true
     },
-    questions: [
-      {
-        question: {
-          type: String,
-          required: true
-        },
-        options: [
-          {
-            text: String,
-            isCorrect: Boolean
-          }
-        ]
-      }
-    ],
-    passingScore: {
-      type: Number,
-      default: 70 // Percentage required to pass
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    timeLimit: {
+      type: Number, // in minutes
+      required: true,
+      default: 30
+    },
+    deadline: {
+      type: Date,
+      required: true
+    },
+    questions: [questionSchema],
+    isActive: {
+      type: Boolean,
+      default: true
     }
   },
   {

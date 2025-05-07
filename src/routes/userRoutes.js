@@ -6,7 +6,8 @@ const {
   getUserProfile,
   updateUserProfile,
   forgotPassword,
-  getStudents
+  getStudents,
+  getAvailableStudents
 } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -20,5 +21,6 @@ router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
 router.get('/students', protect, admin, getStudents);
+router.get('/students/available', protect, admin, getAvailableStudents);
 
 module.exports = router;

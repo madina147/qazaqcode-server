@@ -9,12 +9,33 @@ const messageSchema = mongoose.Schema(
     },
     content: {
       type: String,
-      required: true,
+      required: function() {
+        return !this.isFile; // Content is required unless it's a file
+      },
       trim: true
     },
     isBlocked: {
       type: Boolean,
       default: false
+    },
+    // New fields for file attachments
+    isFile: {
+      type: Boolean,
+      default: false
+    },
+    fileUrl: {
+      type: String,
+      trim: true
+    },
+    fileName: {
+      type: String,
+      trim: true
+    },
+    // For message categorization (question, answer, code, etc.)
+    messageType: {
+      type: String,
+      enum: ['regular', 'question', 'answer', 'code', 'file'],
+      default: 'regular'
     }
   },
   {

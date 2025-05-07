@@ -8,9 +8,10 @@ const registerStudent = async (req, res) => {
   const { firstName, lastName, middleName, grade, gradeLetter, login, password } = req.body;
 
   const userExists = await User.findOne({ login });
+
   if (userExists) {
-    res.status(400).json({ message: "Мұндай логині бар пайдаланушы әлдеқашан бар" });
-    return;
+    res.status(400);
+    throw new Error('User already exists');
   }
 
   const user = await User.create({
@@ -23,6 +24,7 @@ const registerStudent = async (req, res) => {
     password,
     role: 'student'
   });
+
   if (user) {
     res.status(201).json({
       _id: user._id,
@@ -33,9 +35,11 @@ const registerStudent = async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400).json({ message: "Пайдаланушыны құру мүмкін болмады" });
+    res.status(400);
+    throw new Error('Invalid user data');
   }
 };
+
 // @desc    Register a new teacher
 // @route   POST /api/users/register/teacher
 // @access  Public
@@ -45,8 +49,8 @@ const registerTeacher = async (req, res) => {
   const userExists = await User.findOne({ login });
 
   if (userExists) {
-    res.status(400).json({ message: "Мұндай логині бар пайдаланушы әлдеқашан бар" });
-    return;
+    res.status(400);
+    throw new Error('User already exists');
   }
 
   const user = await User.create({
@@ -70,7 +74,8 @@ const registerTeacher = async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400).json({ message: "Пайдаланушыны құру мүмкін болмады" });
+    res.status(400);
+    throw new Error('Invalid user data');
   }
 };
 
@@ -92,7 +97,8 @@ const authUser = async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(401).json({ message: "Қате логин немесе пароль" });
+    res.status(401);
+    throw new Error('Invalid login or password');
   }
 };
 
@@ -121,7 +127,8 @@ const getUserProfile = async (req, res) => {
       points: user.points,
     });
   } else {
-    res.status(404).json({ message: "Пайдаланушы табылмады" });
+    res.status(404);
+    throw new Error('User not found');
   }
 };
 
@@ -162,7 +169,8 @@ const updateUserProfile = async (req, res) => {
       token: generateToken(updatedUser._id),
     });
   } else {
-    res.status(404).json({ message: "Пайдаланушы табылмады" });
+    res.status(404);
+    throw new Error('User not found');
   }
 };
 
@@ -178,8 +186,8 @@ const forgotPassword = async (req, res) => {
   const user = await User.findOne({ login });
   
   if (!user) {
-    res.status(404).json({ message: "Мұндай логині бар пайдаланушы табылмады" });
-    return;
+    res.status(404);
+    throw new Error('User not found');
   }
   
   res.status(200).json({ message: 'Password reset email sent' });
@@ -204,7 +212,8 @@ const getAvailableStudents = async (req, res) => {
 
     res.json(students);
   } catch (error) {
-    res.status(500).json({ message: "Сервер қатесі" });
+    res.status(500);
+    throw new Error('Server Error');
   }
 };
 

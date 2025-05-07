@@ -1,0 +1,4 @@
+^C
+^C
+cd /home/ayangali/Documents/qazaqcode/server && echo 'const express = require("express");' > src/routes/uploadRoutes.js
+

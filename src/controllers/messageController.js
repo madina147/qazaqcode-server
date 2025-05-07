@@ -50,8 +50,38 @@ const blockMessage = async (req, res) => {
   res.json({ message: 'Message blocked' });
 };
 
+// @desc    Upload a Python file
+// @route   POST /api/messages/upload
+// @access  Private
+const uploadFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    // Create a message with file information
+    const message = await Message.create({
+      sender: req.user._id,
+      content: `Shared a Python file: ${req.file.originalname}`,
+      fileUrl: `/uploads/${req.file.filename}`,
+      fileName: req.file.originalname,
+      isFile: true
+    });
+    
+    const populatedMessage = await Message.findById(message._id).populate('sender', 'firstName lastName role');
+    
+    // Notify socket.io users if needed
+    // This is handled in the socket.io connection event in server.js
+    
+    res.status(201).json(populatedMessage);
+  } catch (error) {
+    res.status(500).json({ message: 'File upload failed', error: error.message });
+  }
+};
+
 module.exports = {
   sendMessage,
   getMessages,
-  blockMessage
+  blockMessage,
+  uploadFile
 };

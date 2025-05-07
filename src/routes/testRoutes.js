@@ -1,19 +1,36 @@
 const express = require('express');
 const {
   createTest,
-  getTestByLessonId,
-  submitTest
+  getTestById,
+  updateTest,
+  deleteTest,
+  submitTest,
+  getGroupTests,
+  getTestResults,
+  getAllStudentResults
 } = require('../controllers/testController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin, authorize } = require('../middleware/authMiddleware');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+// All routes include the groupId from parent router
 
 router.route('/')
-  .post(protect, admin, createTest);
+  .post(protect, authorize(['teacher']), createTest)
+  .get(protect, getGroupTests);
 
-router.route('/lesson/:lessonId')
-  .get(protect, getTestByLessonId);
+router.route('/:testId')
+  .get(protect, getTestById)
+  .put(protect, authorize(['teacher']), updateTest)
+  .delete(protect, authorize(['teacher']), deleteTest);
 
-router.post('/:id/submit', protect, submitTest);
+router.route('/:testId/submit')
+  .post(protect, authorize(['student']), submitTest);
+
+router.route('/:testId/results')
+  .get(protect, getTestResults);
+
+router.route('/:testId/results/all')
+  .get(protect, authorize(['teacher']), getAllStudentResults);
 
 module.exports = router;
